@@ -34,7 +34,7 @@ plt.xlabel('Total Score')
 plt.ylabel('Counts of Score')
 
 plt.hist(note_totals)
-plt.title('Hist for Total Score with Note given')
+plt.title('Hist for Total Score')
 plt.xlabel('Total Score')
 plt.ylabel('Counts of Score')
 
@@ -42,6 +42,6 @@ plt.ylabel('Counts of Score')
 stat, pvalue = stats.mannwhitneyu(no_note_totals, note_totals)
 print(pvalue)
 if pvalue > .05:
-    print('Fail to reject null hypothesis that means are different')
+    print('Fail to reject null hypothesis that medians are different')
 else:
-    print('Reject null hypothesis that means are different')
+    print('Reject null hypothesis that medians are different')
