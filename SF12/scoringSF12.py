@@ -34,6 +34,8 @@ std_mapping = {
     'MH': {'Mean': 70.18217, 'SD': 20.50597}
 }
 
+VALID_VALUES = [1., 2., 3., 4., 5.]
+
 COLUMNS = ['Q1', 'Q2A', 'Q2B', 'Q3A', 'Q3B', 'Q4A', 'Q4B', 'Q5', 'Q6A', 'Q6B', 'Q6C', 'Q7']
 
 def q1_mapping(value):
@@ -60,6 +62,22 @@ def rev_mapping(value):
 
     return reverse_codes[value]
 
+def out_of_range_value(value: float):
+
+    if value in VALID_VALUES:
+        output = value
+    else:
+        output = np.nan
+    
+    return output
+
+def prep_df(df: pd.DataFrame):
+    
+    data = df.copy()
+    data_cols = [col for col in raw_data.columns if col != "Identifier"]
+    data[data_cols] = data[data_cols].applymap(out_of_range_value)
+
+    return data
 
 def recalibrate(input_df: pd.DataFrame) -> pd.DataFrame:
     '''
@@ -157,7 +175,7 @@ def pcs_mcs(data: pd.DataFrame) -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    raw_data = pd.read_csv('data/SF12_A.csv')
+    raw_data = pd.read_csv('data/SF12_B.csv')
     data1 = recalibrate(raw_data).copy()
     data2 = raw(data1).copy()
     data3 = transformed(data2).copy()
