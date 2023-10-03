@@ -2,14 +2,14 @@ import pandas as pd
 import numpy as np
 
 raw_mapping = {
-    'PF': ['Q2A', 'Q2B'],
-    'RP': ['Q3A', 'Q3B'],
-    'BP': ['Q5'],
-    'GH': ['Q1'],
-    'VT': ['Q6B'],
-    'SF': ['Q7'],
-    'RE': ['Q4A', 'Q4B'],
-    'MH': ['Q6A', 'Q6C']
+    'PF': ['workingQ2A', 'workingQ2B'],
+    'RP': ['workingQ3A', 'workingQ3B'],
+    'BP': ['workingQ5'],
+    'GH': ['workingQ1'],
+    'VT': ['workingQ6B'],
+    'SF': ['workingQ7'],
+    'RE': ['workingQ4A', 'workingQ4B'],
+    'MH': ['workingQ6A', 'workingQ6C']
 }
 
 low_high_mapping = {
@@ -72,12 +72,12 @@ def recalibrate(input_df: pd.DataFrame) -> pd.DataFrame:
     data = input_df.copy()
     # cols = ['Q1', 'Q2A', 'Q2B', 'Q3A', 'Q3B', 'Q4A', 'Q4B', 'Q5', 'Q6A', 'Q6B', 'Q6C', 'Q7']
     for column in COLUMNS:
-        data['orginal' + column] = data[column]
+        data['working' + column] = data[column]
 
-    data['Q5'] = data['Q5'].apply(rev_mapping)
-    data['Q6A'] = data['Q6A'].apply(rev_mapping)
-    data['Q6B'] = data['Q6B'].apply(rev_mapping)
-    data['Q1'] = data['Q1'].apply(q1_mapping)
+    data['workingQ5'] = data['workingQ5'].apply(rev_mapping)
+    data['workingQ6A'] = data['workingQ6A'].apply(rev_mapping)
+    data['workingQ6B'] = data['workingQ6B'].apply(rev_mapping)
+    data['workingQ1'] = data['workingQ1'].apply(q1_mapping)
 
     return data
 
@@ -156,7 +156,6 @@ def pcs_mcs(data: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-
 if __name__ == "__main__":
     raw_data = pd.read_csv('data/SF12_A.csv')
     data1 = recalibrate(raw_data).copy()
@@ -167,7 +166,6 @@ if __name__ == "__main__":
     data6 = agg_pcs(data5).copy()
     data7 = agg_mcs(data6).copy()
     final_data = pcs_mcs(data7).copy()
-    final_data = final_data.drop(columns=COLUMNS).copy()
-    final_data.columns = [col.replace('orginal', '') for col in final_data.columns]
+    final_data = final_data.drop(columns=[col for col in final_data.columns if "working" in col])
     final_data = final_data.round(2).copy()
     final_data.to_csv('data/SF12_A_OUTPUT.csv')
