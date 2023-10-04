@@ -47,8 +47,10 @@ def q1_mapping(value):
         ,4:2.0
         ,5:1.0
     }
-
-    return question1_codes[value]
+    if np.isnan(value):
+        return np.nan
+    else:
+        return question1_codes[value]
 
 def rev_mapping(value):
 
@@ -59,8 +61,11 @@ def rev_mapping(value):
         ,4:2
         ,5:1
         }
+    if np.isnan(value):
+        return np.nan
+    else:
+        return reverse_codes[value]
 
-    return reverse_codes[value]
 
 def out_of_range_value(value: float):
 
@@ -100,14 +105,26 @@ def recalibrate(input_df: pd.DataFrame) -> pd.DataFrame:
     return data
 
 
+def mean_impute(row):
+    if row.isnull().any():
+        valid_nums = row.dropna()
+        num_missing = len(row) - len(valid_nums)
+        if len(valid_nums) >= len(row) / 2:
+            row_mean = valid_nums.mean()
+            row_sum = valid_nums.sum()
+            total = (row_mean*num_missing) + row_sum
+        else:
+            total = np.nan
+        return total
+    else:
+        return row.sum()
+
 def raw(input_df: pd.DataFrame) -> pd.DataFrame:
 
     data = input_df.copy()
 
     for value in raw_mapping:
-        data['Raw_' + str(value)] = 0
-        for column in raw_mapping[value]:
-            data['Raw_' + str(value)] = data['Raw_' + str(value)] + data[column]
+        data['Raw_' + str(value)] = data[raw_mapping[value]].apply(mean_impute, axis=1)
     
     return data
 
@@ -176,7 +193,8 @@ def pcs_mcs(data: pd.DataFrame) -> pd.DataFrame:
 
 if __name__ == "__main__":
     raw_data = pd.read_csv('data/SF12_B.csv')
-    data1 = recalibrate(raw_data).copy()
+    preped_data = prep_df(raw_data)
+    data1 = recalibrate(preped_data).copy()
     data2 = raw(data1).copy()
     data3 = transformed(data2).copy()
     data4 = standardized(data3).copy()
@@ -186,4 +204,4 @@ if __name__ == "__main__":
     final_data = pcs_mcs(data7).copy()
     final_data = final_data.drop(columns=[col for col in final_data.columns if "working" in col])
     final_data = final_data.round(2).copy()
-    final_data.to_csv('data/SF12_A_OUTPUT.csv')
+    final_data.to_csv('data/SF12_B_OUTPUT.csv')
