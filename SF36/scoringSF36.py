@@ -36,14 +36,24 @@ std_mapping = {
 
 VALID_VALUES_DICT = {
     'FIVE': {'values': [1., 2., 3., 4., 5.]}
-    ,'THREE': {'values': [1., 2., 3.], 'cols': ['Q3a', 'Q3b', 'Q3c', 'Q3d', 'Q3e', 'Q3f', 'Q3g', 'Q3h','Q3i', 'Q3j']}
-    ,'SIX': {'values':[1., 2., 3., 4., 5., 6.], 'cols': ['Q7']}
+    ,'THREE': {'values': [1., 2., 3.], 'cols': ['workingQ3a', 'workingQ3b', 'workingQ3c', 'workingQ3d', 'workingQ3e', 'workingQ3f', 'workingQ3g', 'workingQ3h','workingQ3i', 'workingQ3j']}
+    ,'SIX': {'values':[1., 2., 3., 4., 5., 6.], 'cols': ['workingQ7']}
     }
 
 COLUMNS = ['Q1', 'Q2', 'Q3a', 'Q3b', 'Q3c', 'Q3d', 'Q3e', 'Q3f',
        'Q3g', 'Q3h', 'Q3i', 'Q3j', 'Q4a', 'Q4b', 'Q4c', 'Q4d', 'Q5a', 'Q5b',
        'Q5c', 'Q6', 'Q7', 'Q8', 'Q9a', 'Q9b', 'Q9c', 'Q9d', 'Q9e', 'Q9f',
        'Q9g', 'Q9h', 'Q9i', 'Q10', 'Q11a', 'Q11b', 'Q11c', 'Q11d']
+
+WORKING_COLS = ['workingQ1','workingQ2','workingQ3a',
+'workingQ3b','workingQ3c','workingQ3d','workingQ3e',
+ 'workingQ3f','workingQ3g','workingQ3h','workingQ3i',
+ 'workingQ3j','workingQ4a','workingQ4b','workingQ4c',
+ 'workingQ4d','workingQ5a','workingQ5b','workingQ5c',
+ 'workingQ6','workingQ7','workingQ8','workingQ9a',
+ 'workingQ9b','workingQ9c','workingQ9d','workingQ9e',
+ 'workingQ9f','workingQ9g','workingQ9h','workingQ9i',
+ 'workingQ10','workingQ11a','workingQ11b','workingQ11c','workingQ11d']
 
 def q1_mapping(value):
 
@@ -112,15 +122,15 @@ def prep_df(df: pd.DataFrame):
         data['working' + column] = data[column]
 
     for col in data.columns:
-        if col in VALID_VALUES_DICT['THREE']['cols']:
-            data[col] = data[col].apply(out_of_range_value_three)
-        elif col in VALID_VALUES_DICT['SIX']['cols']:
-            data[col] = data[col].apply(out_of_range_value_six)
-        elif col == 'Identifier':
-            pass
+        if 'working' in col:
+            if col in VALID_VALUES_DICT['THREE']['cols']:
+                data[col] = data[col].apply(out_of_range_value_three)
+            elif col in VALID_VALUES_DICT['SIX']['cols']:
+                data[col] = data[col].apply(out_of_range_value_six)
+            else:
+                data[col] = data[col].apply(out_of_range_value_five)
         else:
-            data[col] = data[col].apply(out_of_range_value_five)
-
+            pass
 
     return data
 
@@ -133,16 +143,92 @@ def recalibrate(input_df: pd.DataFrame) -> pd.DataFrame:
     output: processed data as a pandas df
     '''
     data = input_df.copy()
-    # cols = ['Q1', 'Q2A', 'Q2B', 'Q3A', 'Q3B', 'Q4A', 'Q4B', 'Q5', 'Q6A', 'Q6B', 'Q6C', 'Q7']
-    for column in COLUMNS:
-        data['working' + column] = data[column]
 
-    data['workingQ5'] = data['workingQ5'].apply(rev_mapping)
-    data['workingQ6A'] = data['workingQ6A'].apply(rev_mapping)
-    data['workingQ6B'] = data['workingQ6B'].apply(rev_mapping)
+    data['workingQ11b'] = data['workingQ11b'].apply(rev_mapping)
+    data['workingQ11d'] = data['workingQ11d'].apply(rev_mapping)
+    data['workingQ9a'] = data['workingQ9a'].apply(rev_mapping)
+    data['workingQ9e'] = data['workingQ9e'].apply(rev_mapping)
+    data['workingQ6'] = data['workingQ6'].apply(rev_mapping)
+    data['workingQ9d'] = data['workingQ9d'].apply(rev_mapping)
+    data['workingQ9h'] = data['workingQ9h'].apply(rev_mapping)
     data['workingQ1'] = data['workingQ1'].apply(q1_mapping)
 
     return data
+
+
+null7_only_dict = {
+    1.:6.
+    ,2.:4.75
+    ,3.:3.5
+    ,4.:2.25
+    ,5:1.
+}
+
+q7_dict = {
+    1.:6.,
+    2.:5.4,
+    3.:4.2,
+    4.:3.1,
+    5.:2.2,
+    6.:1.
+}
+
+both_7_8_dict = {
+    1.:{
+        1.:6.,
+        2.:5.,
+        3.:5.,
+        4.:5.,
+        5.:5.,
+        6.:5.
+    },
+    2.:{
+        1.:4.,
+        2.:4.,
+        3.:4.,
+        4.:4.,
+        5.:4.,
+        6.:4.
+    },
+    3.:{
+        1.:3.,
+        2.:3.,
+        3.:3.,
+        4.:3.,
+        5.:3.,
+        6.:3.
+    },
+    4.:{
+        1.:2.,
+        2.:2.,
+        3.:2.,
+        4.:2.,
+        5.:2.,
+        6.:2.,
+    },
+    5.:{
+        1.:1.,
+        2.:1.,
+        3.:1.,
+        4.:1.,
+        5.:1.,
+        6.:1.
+    },
+}
+
+def q7_8_recalibrate(row):
+
+    if row.isna().all():
+        row['workingQ8'] = np.nan
+        row['workingQ7'] = np.nan
+    elif pd.isna(row['workingQ7']) and pd.notna(row['workingQ8']):
+        row['workingQ8'] = null7_only_dict[row['workingQ8']]
+        row['workingQ7'] = row['workingQ7']
+    elif row.notna().all():
+        row['workingQ8'] = both_7_8_dict[row['workingQ8']][row['workingQ7']]
+        row['workingQ7'] = q7_dict[row['workingQ7']]
+
+    return row
 
 
 def mean_impute(row):
@@ -235,6 +321,7 @@ if __name__ == "__main__":
     raw_data = pd.read_csv('data/Practice SF-36 data1.csv')
     preped_data = prep_df(raw_data)
     data1 = recalibrate(preped_data).copy()
+    data1[['workingQ7', 'workingQ8']] = data1[['workingQ7', 'workingQ8']].apply(q7_8_recalibrate, axis=1)
     data2 = raw(data1).copy()
     data3 = transformed(data2).copy()
     data4 = standardized(data3).copy()
@@ -244,4 +331,4 @@ if __name__ == "__main__":
     final_data = pcs_mcs(data7).copy()
     final_data = final_data.drop(columns=[col for col in final_data.columns if "working" in col])
     final_data = final_data.round(2).copy()
-    final_data.to_csv('data/SF12_B_OUTPUT.csv')
+    #final_data.to_csv('data/SF12_B_OUTPUT.csv')
