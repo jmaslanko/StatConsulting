@@ -13,25 +13,25 @@ raw_mapping = {
 }
 
 low_high_mapping = {
-    'PF': {'MAX': 6, 'MIN': 2, 'RANGE': 4},
-    'RP': {'MAX': 10, 'MIN': 2, 'RANGE': 8},
-    'BP': {'MAX': 5, 'MIN': 1, 'RANGE': 4},
-    'GH': {'MAX': 5, 'MIN': 1, 'RANGE': 4},
-    'VT': {'MAX': 5, 'MIN': 1, 'RANGE': 4},
-    'SF': {'MAX': 5, 'MIN': 1, 'RANGE': 4},
-    'RE': {'MAX': 10, 'MIN': 2, 'RANGE': 8},
-    'MH': {'MAX': 10, 'MIN': 2, 'RANGE': 8}
+    'PF': {'MAX': 30, 'MIN': 10, 'RANGE': 20},
+    'RP': {'MAX': 20, 'MIN': 4, 'RANGE': 16},
+    'BP': {'MAX': 12, 'MIN': 2, 'RANGE': 10},
+    'GH': {'MAX': 25, 'MIN': 5, 'RANGE': 20},
+    'VT': {'MAX': 20, 'MIN': 4, 'RANGE': 16},
+    'SF': {'MAX': 10, 'MIN': 2, 'RANGE': 8},
+    'RE': {'MAX': 15, 'MIN': 3, 'RANGE': 12},
+    'MH': {'MAX': 25, 'MIN': 5, 'RANGE': 20}
 }
 
 std_mapping = {
-    'PF': {'Mean': 81.18122, 'SD': 29.10558},
-    'RP': {'Mean': 80.52856, 'SD': 27.13526},
-    'BP': {'Mean': 81.74015, 'SD': 24.53019},
-    'GH': {'Mean': 72.19795, 'SD': 23.19041},
-    'VT': {'Mean': 55.59090, 'SD': 24.84380},
-    'SF': {'Mean': 83.73973, 'SD': 24.75775},
-    'RE': {'Mean': 86.41051, 'SD': 22.35543},
-    'MH': {'Mean': 70.18217, 'SD': 20.50597}
+    'PF': {'Mean': 83.29094, 'SD': 23.75883},
+    'RP': {'Mean': 82.50964, 'SD': 25.52028},
+    'BP': {'Mean': 71.32527, 'SD': 23.66224},
+    'GH': {'Mean': 70.84570, 'SD': 20.97821},
+    'VT': {'Mean': 58.31411, 'SD': 20.01923},
+    'SF': {'Mean': 84.30250, 'SD': 22.91921},
+    'RE': {'Mean': 87.39733, 'SD': 21.43778},
+    'MH': {'Mean': 74.98685, 'SD': 17.75604}
 }
 
 VALID_VALUES_DICT = {
@@ -331,4 +331,4 @@ if __name__ == "__main__":
     final_data = pcs_mcs(data7).copy()
     final_data = final_data.drop(columns=[col for col in final_data.columns if "working" in col])
     final_data = final_data.round(2).copy()
-    #final_data.to_csv('data/SF12_B_OUTPUT.csv')
+    final_data.to_csv('data/SF36_data1_OUTPUT.csv')
