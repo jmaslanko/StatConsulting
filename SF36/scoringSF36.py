@@ -224,6 +224,9 @@ def q7_8_recalibrate(row):
     elif pd.isna(row['workingQ7']) and pd.notna(row['workingQ8']):
         row['workingQ8'] = null7_only_dict[row['workingQ8']]
         row['workingQ7'] = row['workingQ7']
+    elif pd.notna(row['workingQ7']) and pd.isna(row['workingQ8']):
+        row['workingQ8'] = row['workingQ8']
+        row['workingQ7'] = q7_dict[row['workingQ7']]
     elif row.notna().all():
         row['workingQ8'] = both_7_8_dict[row['workingQ8']][row['workingQ7']]
         row['workingQ7'] = q7_dict[row['workingQ7']]
