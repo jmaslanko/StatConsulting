@@ -15,7 +15,7 @@ final_list = []
 site_list = []
 
 for site in range(0, T):
-    site_list.extend([SITES[site] + '0' + str(i) for i in range(1, S+1)])
+    site_list.extend([SITES[site] + str(i).zfill(2) for i in range(1, S+1)])
     for block in range(1, NUM_BLOCKS+1):
         num_t = ['T' for _ in range(1, (int(B*N/(N+D)))+1)]
         num_c = ['C' for _ in range(1, (int(B*D/(N+D)))+1)]
