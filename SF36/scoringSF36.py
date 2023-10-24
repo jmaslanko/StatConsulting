@@ -321,7 +321,7 @@ def pcs_mcs(data: pd.DataFrame) -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    raw_data = pd.read_csv('data/Practice SF-36 data2.csv')
+    raw_data = pd.read_csv('data/SF36 FINAL.csv')
     preped_data = prep_df(raw_data)
     data1 = recalibrate(preped_data).copy()
     data1[['workingQ7', 'workingQ8']] = data1[['workingQ7', 'workingQ8']].apply(q7_8_recalibrate, axis=1)
@@ -334,4 +334,4 @@ if __name__ == "__main__":
     final_data = pcs_mcs(data7).copy()
     final_data = final_data.drop(columns=[col for col in final_data.columns if "working" in col])
     final_data = final_data.round(2).copy()
-    final_data.to_csv('data/SF36_data2_OUTPUT.csv')
+    final_data.to_csv('data/SF36_FINAL_OUTPUT.csv')
